@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808"><title>QÜDÜS GOLD — Accès GOLD et compte central</title>
+<style>
+:root{--gold:#f4c400;--bg:#080808;--panel:#171717;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px Arial,sans-serif}
+header{padding:15px 5%;border-bottom:1px solid #594500;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;background:#090909;z-index:2}
+.brand{font-weight:900;color:var(--gold);font-size:20px}.wrap{max-width:1050px;margin:auto;padding:22px}
+h1,h2,h3{color:var(--gold)}button,.btn{border:0;border-radius:9px;background:var(--gold);color:#111;font-weight:bold;padding:11px 16px;cursor:pointer}
+input,textarea{width:100%;padding:12px;margin:7px 0 14px;background:#222;color:#fff;border:1px solid #554400;border-radius:8px}
+.auth{max-width:440px;margin:7vh auto;background:var(--panel);padding:25px;border:1px solid #715900;border-radius:18px}
+.tabs,.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.tile,.panel{background:var(--panel);border:1px solid #4b3b00;border-radius:13px;padding:16px}
+.tile{cursor:pointer;text-align:left;color:white}.tile b{display:block;color:var(--gold);font-size:17px;margin:6px 0}
+small,.muted{color:var(--muted)}.hidden{display:none!important}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.item{padding:10px;border-bottom:1px solid #333;overflow-wrap:anywhere}
+.notice{background:#211b08;border:1px solid #705800;padding:12px;border-radius:10px;line-height:1.5}
+</style></head>
+<body>
+<header><div class="brand">👑 QÜDÜS GOLD</div><div id="headerUser" class="muted">Espace membre</div><button id="logout" class="hidden" onclick="logout()">Déconnexion</button></header>
+<main class="wrap">
+<section id="auth" class="auth">
+<h1>Bienvenue</h1><p class="muted">Un seul compte pour toutes les rubriques QÜDÜS GOLD.</p>
+<div class="tabs"><button onclick="showAuth('login')">Connexion</button><button onclick="showAuth('register')">Créer un compte</button></div>
+<form id="authForm" onsubmit="submitAuth(event)">
+<label id="nameLabel" class="hidden">Nom complet</label><input id="name" class="hidden" autocomplete="name" placeholder="Votre nom">
+<label>Adresse e-mail</label><input id="email" type="email" required autocomplete="email" placeholder="exemple@email.com">
+<label>Mot de passe</label><input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="6 caractères minimum">
+<button id="authSubmit" type="submit">Se connecter</button>
+<p id="authError" class="muted"></p></form>
+<div class="notice"><b>Version de démonstration :</b> les comptes et données restent sur cet appareil. Ne réutilisez pas un vrai mot de passe. La synchronisation entre appareils nécessitera le serveur sécurisé QÜDÜS GOLD.</div>
+</section>
+<section id="app" class="hidden">
+<div class="topline"><div><h1>Mon espace QÜDÜS GOLD</h1><p class="muted">Toutes les rubriques utilisent le même profil.</p></div><div class="panel">👤 <b id="profileName"></b><br><small id="profileEmail"></small></div></div>
+<section class="panel" id="goldAccess" style="margin:18px 0;border:1px solid #d6a900">
+<h2>🪙 Mon accès GOLD</h2><p>1 GOLD = 5 000 GNF = 24 heures d’accès à toutes les rubriques.</p>
+<div class="grid"><div class="tile">Solde GOLD<b id="goldBalance">0</b><small>Gold disponibles</small></div><div class="tile">Accès restant<b id="goldRemaining">Expiré</b><small>Temps d’accès plateforme</small></div></div>
+<h3>Choisir un pack</h3><div class="grid">
+<button class="tile" onclick="buyGold(1)">1 GOLD<b>5 000 GNF</b><small>24 heures</small></button>
+<button class="tile" onclick="buyGold(2)">2 GOLD<b>10 000 GNF</b><small>48 heures</small></button>
+<button class="tile" onclick="buyGold(3)">3 GOLD<b>15 000 GNF</b><small>72 heures</small></button>
+<button class="tile" onclick="buyGold(5)">5 GOLD<b>25 000 GNF</b><small>120 heures</small></button>
+<button class="tile" onclick="buyGold(10)">10 GOLD<b>50 000 GNF</b><small>240 heures</small></button>
+<button class="tile" onclick="buyGold(30)">30 GOLD<b>150 000 GNF</b><small>720 heures (30 jours)</small></button></div>
+<p id="goldNotice" class="notice">Démo : les achats ci-dessus simulent l’activation. Aucun paiement réel n’est effectué. La connexion Internet (Wi-Fi ou données mobiles) reste nécessaire.</p>
+</section>
+<h2>Mes rubriques</h2><div class="grid" id="moduleGrid">
+<button class="tile" onclick="openModule('publications')">🌍<b>Publications</b><small>Partager un texte</small></button>
+<button class="tile" onclick="openModule('stories')">📸<b>Stories</b><small>Partager un moment</small></button>
+<button class="tile" onclick="openModule('messages')">💬<b>Messages</b><small>Notes personnelles démo</small></button>
+<button class="tile" onclick="openModule('jeux')">🎮<b>Jeux</b><small>Progression du joueur</small></button>
+<button class="tile" onclick="openModule('musique')">🎵<b>Musique</b><small>Espace audio</small></button>
+<button class="tile" onclick="openModule('films')">🎬<b>Films & séries</b><small>Catalogue à connecter</small></button>
+<button class="tile" onclick="openModule('sport')">⚽<b>Sports</b><small>Rubrique sportive</small></button>
+<button class="tile" onclick="openModule('portefeuille')">💳<b>Portefeuille</b><small>Solde fictif</small></button>
+</div>
+<div id="module" class="panel hidden" style="margin-top:20px"><div class="topline"><h2 id="moduleTitle"></h2><button onclick="closeModule()">Fermer</button></div><div id="moduleBody"></div></div>
+<h2>Mon activité centralisée</h2><div class="panel"><p>Compte unique : <b id="activityCount">0</b> élément(s) enregistré(s) sur cet appareil.</p><div id="activityList"></div></div>
+</section></main>
+<script>
+const KEY='qudus_gold_demo_v1'; let mode='login', current=null;
+const $=id=>document.getElementById(id);
+function read(){try{return JSON.parse(localStorage.getItem(KEY))||{users:[],data:{}}}catch(e){return {users:[],data:{}}}}
+function save(db){localStorage.setItem(KEY,JSON.stringify(db))}
+function showAuth(m){mode=m;$('name').classList.toggle('hidden',m==='login');$('nameLabel').classList.toggle('hidden',m==='login');$('name').required=m==='register';$('authSubmit').textContent=m==='login'?'Se connecter':'Créer mon compte';$('authError').textContent=''}
+async function digest(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function submitAuth(e){e.preventDefault();const db=read(),email=$('email').value.trim().toLowerCase(),pass=await digest($('password').value);let u=db.users.find(x=>x.email===email);
+if(mode==='register'){if(u){$('authError').textContent='Cette adresse possède déjà un compte.';return}u={id:crypto.randomUUID(),name:$('name').value.trim(),email,pass};db.users.push(u);db.data[u.id]={};save(db)}
+else if(!u||u.pass!==pass){$('authError').textContent='Adresse e-mail ou mot de passe incorrect.';return}
+current=u.id;sessionStorage.setItem('qg_session',current);render()}
+function logout(){sessionStorage.removeItem('qg_session');current=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden');$('logout').classList.add('hidden');$('headerUser').textContent='Espace membre'}
+function data(){const db=read();return db.data[current]||(db.data[current]={})}
+function updateData(d){const db=read();db.data[current]=d;save(db);renderActivity()}
+function render(){const db=read();current=current||sessionStorage.getItem('qg_session');const u=db.users.find(x=>x.id===current);if(!u){logout();return}
+$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('headerUser').textContent=u.name;$('profileName').textContent=u.name;$('profileEmail').textContent=u.email;renderActivity();renderGold()}
+function goldState(){let d=data();return {balance:d.goldBalance||0,until:d.goldUntil||0}}
+function hasAccess(){return goldState().until>Date.now()}
+function renderGold(){let g=goldState();$('goldBalance').textContent=g.balance;$('goldRemaining').textContent=g.until>Date.now()?formatTime(g.until-Date.now()):'Expiré';$('moduleGrid').style.opacity=hasAccess()?'1':'.45';$('moduleGrid').style.pointerEvents=hasAccess()?'auto':'none';$('goldNotice').textContent=hasAccess()?'Accès actif : toutes les rubriques sont ouvertes jusqu’à expiration. Démo uniquement, aucun paiement réel.':'Accès expiré : choisissez un pack GOLD pour simuler la réactivation. Démo uniquement, aucun paiement réel. Une connexion Internet reste nécessaire.'}
+function formatTime(ms){let h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);return h+' h '+m+' min'}
+function buyGold(n){let d=data(),now=Date.now(),base=Math.max(now,d.goldUntil||0);d.goldBalance=(d.goldBalance||0)+n;d.goldUntil=base+n*24*3600000;updateData(d);renderGold();$('goldNotice').textContent='Pack de démonstration activé : '+n+' GOLD, '+(n*24)+' heures d’accès. Aucun paiement réel n’a été effectué.'}
+
+function renderActivity(){const d=data(),all=Object.entries(d).flatMap(([k,v])=>Array.isArray(v)?v.map(x=>({...x,kind:k})):[]);$('activityCount').textContent=all.length;$('activityList').innerHTML=all.slice().reverse().slice(0,12).map(x=>`<div class="item"><b>${x.kind}</b> — ${esc(x.text||'Élément enregistré')}</div>`).join('')||'<p class="muted">Aucune activité pour le moment.</p>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openModule(k){if(!hasAccess()){renderGold();alert('Accès GOLD expiré. Choisissez un pack GOLD pour continuer.');return}const titles={publications:'Publications',stories:'Stories',messages:'Messages',jeux:'Jeux',musique:'Musique',films:'Films et séries',sport:'Sports',portefeuille:'Portefeuille'};$('module').classList.remove('hidden');$('moduleTitle').textContent=titles[k];let d=data();
+if(['publications','stories','messages'].includes(k)){$('moduleBody').innerHTML=`<label>${k==='messages'?'Écrire une note personnelle':k==='stories'?'Texte de votre story':'Votre publication'}</label><textarea id="entry" rows="3" placeholder="Écrivez ici..."></textarea><button onclick="addEntry('${k}')">Enregistrer</button><div id="entries"></div>`;showEntries(k)}
+else if(k==='jeux'){$('moduleBody').innerHTML=`<p>Votre espace joueur est associé à votre compte unique.</p><p>Progression enregistrée : <b>${d.gamesPlayed||0}</b> partie(s) de démonstration.</p><button onclick="playDemo()">Lancer une partie démo</button><p class="muted">Aucun argent réel ni paiement n'est activé.</p>`}
+else if(k==='portefeuille'){$('moduleBody').innerHTML='<h3>0 FG</h3><p class="muted">Portefeuille fictif — aucune transaction réelle.</p>'}
+else {$('moduleBody').innerHTML='<p>Cette rubrique est préparée et reliée au même profil. Son contenu réel (catalogue, audio ou résultats sportifs) sera activé lors de la connexion aux services et fournisseurs autorisés.</p>'}}
+function addEntry(k){let v=$('entry').value.trim();if(!v)return;let d=data();d[k]=d[k]||[];d[k].push({text:v,date:new Date().toISOString()});updateData(d);showEntries(k);$('entry').value=''}
+function showEntries(k){let d=data();let el=$('entries');if(el)el.innerHTML=(d[k]||[]).slice().reverse().map(x=>`<div class="item">${esc(x.text)}</div>`).join('')}
+function playDemo(){let d=data();d.gamesPlayed=(d.gamesPlayed||0)+1;updateData(d);openModule('jeux')}
+function closeModule(){$('module').classList.add('hidden')}
+(function(){showAuth('login');const s=sessionStorage.getItem('qg_session');if(s){current=s;render()}setInterval(()=>{if(current&&$('app')&&!$('app').classList.contains('hidden'))renderGold()},60000)})();
+</script></body></html>
